@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dao.BrandDao">
+    <resultMap id="myBrand" type="entity.Brand">
+        <result property="isDisplay" column="is_display"></result>
+    </resultMap>
+    <insert id="saveBrand" parameterType="entity.Brand">
+        insert into bbs_brand(name,description,img_url,web_site,sort,is_display)
+        values(#{name},#{description},#{img_url},#{web_site},#{sort},#{isDisplay})
+    </insert>
+    <update id="updateBrand" parameterType="entity.Brand">
+        update bbs_brand set name=#{name},is_display=#{isDisplay} where id=#{id}
+    </update>
+    <delete id="delBrandById" parameterType="Integer">
+        delete  from bbs_brand where id=#{brandId}
+    </delete>
+
+
+    <select id="getAll" resultType="entity.Brand">
+        select * from bbs_brand
+    </select>
+    <select id="getBrands" resultType="entity.Brand">
+        select * from bbs_brand limit #{offset},#{limit}
+    </select>
+    <select id="getTotal" resultType="java.lang.Integer">
+        select count(*) from bbs_brand
+    </select>
+    <select id="getTotalByOptions" resultType="java.lang.Integer">
+        select count(*) from bbs_brand
+        <where>
+            <if test="name!=''">
+                name like "%"#{name}"%"
+            </if>
+            <if test="is_display!=null">
+                and is_display=#{is_display}
+            </if>
+        </where>
+    </select>
+    <select id="getBrandsByOptions" resultMap="myBrand">
+        select * from bbs_brand
+        <where>
+            <if test="name!=''">
+                name like "%"#{name}"%"
+            </if>
+            <if test="is_display!=null">
+                and is_display=#{is_display}
+            </if>
+        </where>
+        limit #{offset},#{limit}
+    </select>
+    <select id="getBrandById" resultMap="myBrand" parameterType="Integer">
+        select * from bbs_brand where id=#{id}
+    </select>
+
+    <delete id="delByIds">
+        delete from bbs_brand
+        <where>
+            id in
+            <foreach collection="array" item="temp" open="(" close=")" separator=",">
+                #{temp}
+            </foreach>
+        </where>
+    </delete>
+</mapper>
